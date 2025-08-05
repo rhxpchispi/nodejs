@@ -1,0 +1,14 @@
+services:
+  myapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: myapp-alpine6
+    image: rhxpchispi/myapp-alpine:6.0
+    ports:
+      - 3030:3000
+    networks:
+      - myapp-network
+networks:
+  myapp-network:
+    driver: bridge
