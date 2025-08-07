@@ -1,11 +1,9 @@
 pipeline {
     agent any
-    parameters {
-        string name: 'VERSION', defaultValue: '4.0'
-    }
     environment {
         DOCKERHUB_CRED = credentials ('dockerhub')
         IMAGEN = 'myapp-alpine'
+        VERSION = "${env.BRANCH_NAME}"
     }
     stages {
         stage('Test de contenedores') {
