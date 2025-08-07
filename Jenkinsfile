@@ -8,11 +8,6 @@ pipeline {
         IMAGEN = 'myapp-alpine'
     }
     stages {
-        stage('Clonar repo de GitHub') {
-            steps {
-                git branch: 'main', url: 'https://github.com/rhxpchispi/nodejs'
-            }
-        }
         stage('Test de contenedores') {
             steps {
                 sh 'docker info | grep "Name:"'  // Mostrará el nombre del contenedor dind
