@@ -2,6 +2,8 @@ pipeline {
     agent any
 
     environment {
+        CREDENCIALES_AWS = credentials('AWS')
+        SSH_KEY_FILE = credentials('terraform-ec2-key') 
         DOCKER_IMAGE = "rhxpchispi/myapp-alpine:dev"
         EC2_PUBLIC_IP = "3.231.145.76"
         DOCKER_CONTAINER_NAME = "myapp-en-aws" // Nombre del contenedor que se va a desplegar
@@ -14,6 +16,8 @@ pipeline {
                     // Conexión SSH para desplegar el contenedor
                     sh """
                     chmod 400 terraform-ec2-key << EOF
+                    export AWS_ACCESS_KEY_ID=${CREDENCIALES_AWS_USR}
+                    export AWS_SECRET_ACCESS_KEY=${CREDENCIALES_AWS_PSW}
                     ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@${EC2_PUBLIC_IP} 
                         set -e
                         
@@ -25,7 +29,9 @@ pipeline {
                         docker rm ${DOCKER_CONTAINER_NAME} || true
 
                         echo "===> Desplegando el contenedor"
-                        docker run ${DOCKER_IMAGE}
+                        docker run -d --name ${DOCKER_CONTAINER_NAME} -p 3000:3000 ${DOCKER_IMAGE}
+                    unset AWS_ACCESS_KEY_ID
+                    unset AWS_SECRET_ACCESS_KEY
                     EOF
                     """
                 }
