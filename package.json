@@ -1,0 +1,14 @@
+{
+  "name": "educacionit",
+  "version": "1.0.0",
+  "description": "lab de nodejs para el curso",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "cris",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
