@@ -6,12 +6,12 @@ pipeline {
         VERSION = "${env.BRANCH_NAME}"
     }
     stages {
-        stage('Test de contenedores') {
+        /* stage('Test de contenedores') {
             steps {
                 sh 'docker info | grep "Name:"'  // Mostrará el nombre del contenedor dind
                 sh 'hostname'                   // Mostrará el hostname del contenedor Jenkins
             }
-        }
+        } */
         stage('Docker build') {
             steps {
                 sh "docker build -t ${DOCKERHUB_CRED_USR}/${env.IMAGEN}:${env.VERSION} ."
@@ -27,10 +27,10 @@ pipeline {
                 sh "docker push ${DOCKERHUB_CRED_USR}/${env.IMAGEN}:${env.VERSION}"
             }
         }
-        stage('Docker run de mi contenedor') {
-            steps {
-                sh "if [ 'docker stop ${env.IMAGEN}' ] ; then docker rm -f ${env.IMAGEN} && docker run -d --name ${env.IMAGEN} -p 5000:5000 ${env.DOCKERHUB_CRED_USR}/${env.IMAGEN}:${env.VERSION} ; else docker run -d --name ${env.IMAGEN} -p 5000:5000 ${env.DOCKERHUB_CRED_USR}/${env.IMAGEN}:${env.VERSION} ; fi"
-            }
-        }
+        // stage('Docker run de mi contenedor') {
+        //     steps {
+        //         sh "if [ 'docker stop ${env.IMAGEN}' ] ; then docker rm -f ${env.IMAGEN} && docker run -d --name ${env.IMAGEN} -p 5000:5000 ${env.DOCKERHUB_CRED_USR}/${env.IMAGEN}:${env.VERSION} ; else docker run -d --name ${env.IMAGEN} -p 5000:5000 ${env.DOCKERHUB_CRED_USR}/${env.IMAGEN}:${env.VERSION} ; fi"
+        //     }
+        // }
     }
 }
