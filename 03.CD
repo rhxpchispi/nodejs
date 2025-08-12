@@ -1,0 +1,43 @@
+pipeline {
+    agent any
+    environment {
+        DOCKERHUB_CRED = credentials ('dockerhub')
+        CREDENCIALES_AWS = credentials('AWS')
+        SSH_KEY = credentials('terraform-ec2-key')
+        EC2_PUBLIC_IP = "44.197.173.19"
+        DOCKER_IMAGE = "rhxpchispi/myapp-alpine:dev"
+        DOCKER_CONTAINER_NAME = "myapp-en-aws"
+    }
+
+    stages {
+        stage ('Deploy de la imagen de docker') {
+            steps {
+                script {
+                    sh """
+                        chmod 400 ${SSH_KEY}
+                        ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@${EC2_PUBLIC_IP} << 'EOF'
+                            set -e
+
+                            export AWS_ACCESS_KEY_ID=${CREDENCIALES_AWS_USR}
+                            export AWS_SECRET_ACCESS_KEY=${CREDENCIALES_AWS_PSW}
+
+                            echo "===> Tirando la imagen: ${DOCKER_IMAGE}"
+                            docker pull ${DOCKER_IMAGE}
+
+                            echo "===> Detener el contenedor si ya esta corriendo"
+                            docker stop ${DOCKER_CONTAINER_NAME} || true
+                            docker rm ${DOCKER_CONTAINER_NAME} || true
+
+                            echo "===> Desplegando el conenedor"
+                            docker run -d --name ${DOCKER_CONTAINER_NAME} -p 3000:3000 ${DOCKER_IMAGE}
+                            docker ps
+
+                            unset AWS_ACCESS_KEY_ID
+                            unset AWS_SECRET_ACCESS_KEY
+                        EOF
+                    """
+                }
+            }
+        }
+    }
+}

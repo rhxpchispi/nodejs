@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOCKERHUB_CRED = credentials ('dockerhub')
         IMAGEN = 'myapp-alpine'
-        VERSION = "${env.BRANCH_NAME}"
+        VERSION = "dev"
     }
     stages {
         /* stage('Test de contenedores') {
